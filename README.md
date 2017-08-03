@@ -28,12 +28,11 @@ This library will handle things like "Running Status" for you, and everything el
 the events that you will read in the specification.
 
 Some consequences of the structure returned being a mirror of the file, is that there are some 
-events which you might not expect.  `NoteOn(channel, pitch, velocity = 0)` is roughly the same as 
-`NoteOff(channel, pitch, velocity)` and many applications will export midi using `NoteOn` actions 
+events which you might not expect.  `NoteOn(channel, pitch, velocity = 0)` is exactly the same as 
+`NoteOff(channel, pitch, 40)` and many applications will export midi using `NoteOn` actions 
 with `velocity` set to `0` instead of `NoteOff` actions. This helps shorten the midi file because of 
 the whole "Running Status" thing. `midi.normalizeOnOff(midiFile)` will fix this and give you what 
-you probably expect.  This is intentionally not done by default. `midi.denormalizeOnOff` will do the
-opposite.
+you probably expect. `midi.denormalizeOnOff` will do the opposite. 
 
 ## Extensions
 
