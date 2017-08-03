@@ -27,6 +27,14 @@ To make use of this library, it is best to have some familiarity with [the midi 
 This library will handle things like "Running Status" for you, and everything else is just mapped to
 the events that you will read in the specification.
 
+## Extensions 
+
+If you read the specification, you'll note that the Midi specification leaves room for custom 
+events.  To use these, just create a `midi.extensions.MidiExtension` instance, and then run 
+`decodeMidiExtended(bytes, extension)` to get an instance of a midi file with the extension events 
+properly decoded.  I don't currently have any of these, because I've only ever needed standard midi 
+events. If you come up with one, let me know and I'll add some docs around it.
+
 ## Caveats 
 
 If you hold on to instances of `midi.decode.fileCodec`, be wary that the individual instances are 
