@@ -1,2 +1,10 @@
 *.class
 *.log
+
+target/
+project/target
+.idea/
+.ensime/
+.ensime_config
+*.ti
+
