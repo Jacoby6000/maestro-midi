@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.scodec:scodec-bits_2.12:1.1.2:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scodec/scodec-bits_2.12/bundles/scodec-bits_2.12-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scodec/scodec-bits_2.12/srcs/scodec-bits_2.12-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.scalaz:scalaz-effect_2.12:7.2.7:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scalaz/scalaz-effect_2.12/bundles/scalaz-effect_2.12-7.2.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scalaz/scalaz-effect_2.12/srcs/scalaz-effect_2.12-7.2.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: org.scodec:scodec-core_2.12:1.10.3:jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scodec/scodec-core_2.12/bundles/scodec-core_2.12-1.10.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../.ivy2/cache/org.scodec/scodec-core_2.12/srcs/scodec-core_2.12-1.10.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

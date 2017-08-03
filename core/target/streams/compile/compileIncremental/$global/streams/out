@@ -1,0 +1,76 @@
+[0m[[0mdebug[0m] [0m[naha] [0m
+[0m[[0mdebug[0m] [0m[naha] Initial source changes: [0m
+[0m[[0mdebug[0m] [0m[naha] 	removed:Set()[0m
+[0m[[0mdebug[0m] [0m[naha] 	added: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] 	modified: Set(/Users/jacobbarber/projects/maestro-midi/core/src/main/scala/com/github/jacoby6000/maestro/midi/decode.scala)[0m
+[0m[[0mdebug[0m] [0m[naha] Invalidated products: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] External API changes: API Changes: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] Modified binary dependencies: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] Initial directly invalidated sources: Set(/Users/jacobbarber/projects/maestro-midi/core/src/main/scala/com/github/jacoby6000/maestro/midi/decode.scala)[0m
+[0m[[0mdebug[0m] [0m[naha] [0m
+[0m[[0mdebug[0m] [0m[naha] Sources indirectly invalidated by:[0m
+[0m[[0mdebug[0m] [0m[naha] 	product: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] 	binary dep: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] 	external source: Set()[0m
+[0m[[0mdebug[0m] [0mAll initially invalidated sources: Set(/Users/jacobbarber/projects/maestro-midi/core/src/main/scala/com/github/jacoby6000/maestro/midi/decode.scala)[0m
+[0m[[0mdebug[0m] [0m[naha] Initial set of included nodes: Set(/Users/jacobbarber/projects/maestro-midi/core/src/main/scala/com/github/jacoby6000/maestro/midi/decode.scala)[0m
+[0m[[0minfo[0m] [0mCompiling 1 Scala source to /Users/jacobbarber/projects/maestro-midi/core/target/scala-2.12/classes...[0m
+[0m[[0mdebug[0m] [0mGetting org.scala-sbt:compiler-interface:0.13.13:component from component compiler for Scala 2.12.3[0m
+[0m[[0mdebug[0m] [0mGetting org.scala-sbt:compiler-interface:0.13.13:component from component compiler for Scala 2.12.3[0m
+[0m[[0mdebug[0m] [0mRunning cached compiler 2d3ad5d2, interfacing (CompilerInterface) with Scala compiler version 2.12.3[0m
+[0m[[0mdebug[0m] [0mCalling Scala compiler with arguments  (CompilerInterface):[0m
+[0m[[0mdebug[0m] [0m	-deprecation[0m
+[0m[[0mdebug[0m] [0m	-encoding[0m
+[0m[[0mdebug[0m] [0m	utf-8[0m
+[0m[[0mdebug[0m] [0m	-explaintypes[0m
+[0m[[0mdebug[0m] [0m	-feature[0m
+[0m[[0mdebug[0m] [0m	-language:existentials[0m
+[0m[[0mdebug[0m] [0m	-language:experimental.macros[0m
+[0m[[0mdebug[0m] [0m	-language:higherKinds[0m
+[0m[[0mdebug[0m] [0m	-language:implicitConversions[0m
+[0m[[0mdebug[0m] [0m	-unchecked[0m
+[0m[[0mdebug[0m] [0m	-Xcheckinit[0m
+[0m[[0mdebug[0m] [0m	-Xfatal-warnings[0m
+[0m[[0mdebug[0m] [0m	-Xfuture[0m
+[0m[[0mdebug[0m] [0m	-Xlint:adapted-args[0m
+[0m[[0mdebug[0m] [0m	-Xlint:by-name-right-associative[0m
+[0m[[0mdebug[0m] [0m	-Xlint:constant[0m
+[0m[[0mdebug[0m] [0m	-Xlint:delayedinit-select[0m
+[0m[[0mdebug[0m] [0m	-Xlint:doc-detached[0m
+[0m[[0mdebug[0m] [0m	-Xlint:inaccessible[0m
+[0m[[0mdebug[0m] [0m	-Xlint:infer-any[0m
+[0m[[0mdebug[0m] [0m	-Xlint:missing-interpolator[0m
+[0m[[0mdebug[0m] [0m	-Xlint:nullary-override[0m
+[0m[[0mdebug[0m] [0m	-Xlint:nullary-unit[0m
+[0m[[0mdebug[0m] [0m	-Xlint:option-implicit[0m
+[0m[[0mdebug[0m] [0m	-Xlint:package-object-classes[0m
+[0m[[0mdebug[0m] [0m	-Xlint:poly-implicit-overload[0m
+[0m[[0mdebug[0m] [0m	-Xlint:private-shadow[0m
+[0m[[0mdebug[0m] [0m	-Xlint:stars-align[0m
+[0m[[0mdebug[0m] [0m	-Xlint:type-parameter-shadow[0m
+[0m[[0mdebug[0m] [0m	-Xlint:unsound-match[0m
+[0m[[0mdebug[0m] [0m	-Yno-adapted-args[0m
+[0m[[0mdebug[0m] [0m	-Ypartial-unification[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-dead-code[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-extra-implicit[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-inaccessible[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-infer-any[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-nullary-override[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-nullary-unit[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-numeric-widen[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-unused:imports[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-unused:patvars[0m
+[0m[[0mdebug[0m] [0m	-Ywarn-value-discard[0m
+[0m[[0mdebug[0m] [0m	-Ypatmat-exhaust-depth[0m
+[0m[[0mdebug[0m] [0m	off[0m
+[0m[[0mdebug[0m] [0m	-bootclasspath[0m
+[0m[[0mdebug[0m] [0m	/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/classes:/Users/jacob.barber/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.12.3.jar[0m
+[0m[[0mdebug[0m] [0m	-classpath[0m
+[0m[[0mdebug[0m] [0m	/Users/jacobbarber/projects/maestro-midi/core/target/scala-2.12/classes:/Users/jacob.barber/.ivy2/cache/org.scalacheck/scalacheck_2.12/jars/scalacheck_2.12-1.13.4.jar:/Users/jacob.barber/.ivy2/cache/org.scala-sbt/test-interface/jars/test-interface-1.0.jar:/Users/jacob.barber/.ivy2/cache/org.scodec/scodec-core_2.12/bundles/scodec-core_2.12-1.10.3.jar:/Users/jacob.barber/.ivy2/cache/org.scodec/scodec-bits_2.12/bundles/scodec-bits_2.12-1.1.2.jar:/Users/jacob.barber/.ivy2/cache/com.chuusai/shapeless_2.12/bundles/shapeless_2.12-2.3.2.jar:/Users/jacob.barber/.ivy2/cache/org.typelevel/macro-compat_2.12/jars/macro-compat_2.12-1.1.1.jar[0m
+[0m[[0mdebug[0m] [0mScala compilation took 0.839216726 s[0m
+[0m[[0mdebug[0m] [0m[naha] New invalidations:[0m
+[0m[[0mdebug[0m] [0m[naha] 	Set()[0m
+[0m[[0mdebug[0m] [0m[naha] Initial set of included nodes: Set()[0m
+[0m[[0mdebug[0m] [0m[naha] Previously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0mdebug[0m] [0m[naha] 	Set()[0m
+[0m[[0mdebug[0m] [0m[naha] All newly invalidated sources after taking into account (previously) recompiled sources:Set()[0m

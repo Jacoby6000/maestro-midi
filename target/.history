@@ -1,0 +1,10 @@
+run
+~run 2
+~runMain com.girhub.jacoby6000.music.MidiDecode
+~runMain com.github.jacoby6000.music.MidiDecode
+~runMain com.girhub.jacoby6000.music.MidiDecode
+~runMain com.github.jacoby6000.music.MidiDecode
+reload
+compile
+exit
+~runMain com.github.jacoby6000.music.MidiDecode
