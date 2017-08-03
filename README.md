@@ -27,7 +27,15 @@ To make use of this library, it is best to have some familiarity with [the midi 
 This library will handle things like "Running Status" for you, and everything else is just mapped to
 the events that you will read in the specification.
 
-## Extensions 
+Some consequences of the structure returned being a mirror of the file, is that there are some 
+events which you might not expect.  `NoteOn(channel, pitch, velocity = 0)` is roughly the same as 
+`NoteOff(channel, pitch, velocity)` and many applications will export midi using `NoteOn` actions 
+with `velocity` set to `0` instead of `NoteOff` actions. This helps shorten the midi file because of 
+the whole "Running Status" thing. `midi.normalizeOnOff(midiFile)` will fix this and give you what 
+you probably expect.  This is intentionally not done by default. `midi.denormalizeOnOff` will do the
+opposite.
+
+## Extensions
 
 If you read the specification, you'll note that the Midi specification leaves room for custom 
 events.  To use these, just create a `midi.extensions.MidiExtension` instance, and then run 

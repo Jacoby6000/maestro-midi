@@ -14,9 +14,9 @@ lazy val core =
     .settings(
       name := "maestro-midi",
       libraryDependencies ++= Seq(
-        "org.scalacheck" %% "scalacheck"   % "1.13.4", // for doing tests with arbitrary data
         "org.scodec" %% "scodec-core" % "1.10.3",
-        "org.specs2" %% "specs2-core" % "3.8.9" % "test,it" // for testing
+        "org.specs2" %% "specs2-core" % "3.8.9" % "test,it", // for testing
+        "org.scalacheck" %% "scalacheck" % "1.13.4" % "test,it" // for doing tests with arbitrary data
       )
   )
 

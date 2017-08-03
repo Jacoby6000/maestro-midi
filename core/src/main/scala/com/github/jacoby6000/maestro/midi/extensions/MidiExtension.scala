@@ -11,6 +11,7 @@ trait MidiExtension[A, B, C, D] {
   def f0Event(data: BitVector): Event[A, B, C, D]
   def f7Event(data: BitVector): Event[A, B, C, D]
 
+  // TODO: Instead of rebuilding every event, write a fold that only messes with the 4 relevant structures.
   def extend(midi: StandardMidi): MidiFile[A, B, C, D] =
     midi.copy(tracks =
       midi.tracks.map(track =>

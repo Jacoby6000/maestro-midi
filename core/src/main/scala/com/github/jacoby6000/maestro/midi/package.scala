@@ -1,6 +1,6 @@
 package com.github.jacoby6000.maestro
 
-import com.github.jacoby6000.maestro.midi.data.MidiFile
+import com.github.jacoby6000.maestro.midi.data._
 import com.github.jacoby6000.maestro.midi.decode._
 import com.github.jacoby6000.maestro.midi.extensions.{MidiExtension, MidiExtensionOps}
 import scodec.Err
@@ -33,4 +33,38 @@ package object midi extends MidiExtensionOps {
     extension: MidiExtension[A, B, C, D]
   ): Either[Err, MidiFile[A, B, C, D]] =
     fileCodec.decodeValue(bits).toEither.map(extension.extend)
+
+  def normalizeOnOff[A, B, C, D](midi: MidiFile[A, B, C, D]): MidiFile[A, B, C, D] = {
+    midi.copy(tracks =
+      midi.tracks.map(track =>
+        track.copy(events =
+          track.events.map(trackEvent =>
+            trackEvent.copy(event =
+              trackEvent.event match {
+                case NoteOn(c, k, 0) => NoteOff(c, k, 40)
+                case ev => ev
+              }
+            )
+          )
+        )
+      )
+    )
+  }
+
+  def denormalizeOnOff[A, B, C, D](midi: MidiFile[A, B, C, D]): MidiFile[A, B, C, D] = {
+    midi.copy(tracks =
+      midi.tracks.map(track =>
+        track.copy(events =
+          track.events.map(trackEvent =>
+            trackEvent.copy(event =
+              trackEvent.event match {
+                case NoteOff(c, k, 40) => NoteOn(c, k, 0)
+                case ev => ev
+              }
+            )
+          )
+        )
+      )
+    )
+  }
 }
