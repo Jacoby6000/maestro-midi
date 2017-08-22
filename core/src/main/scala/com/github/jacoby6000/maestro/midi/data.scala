@@ -148,5 +148,39 @@ object data {
   case class Track[+A <: MidiExtensionContainer](chunkType: ChunkType, events: Vector[TrackEvent[A]])
   case class TrackEvent[+A <: MidiExtensionContainer](deltaTime: Int, event: Event[A])
 
-  case class MidiFile[+A <: MidiExtensionContainer](header: Header, tracks: Vector[Track[A]])
+  case class MidiFile[+A <: MidiExtensionContainer](header: Header, tracks: Vector[Track[A]]) {
+    def normalizeOnOff: MidiFile[A] = {
+      this.copy(tracks =
+        this.tracks.map(track =>
+          track.copy(events =
+            track.events.map(trackEvent =>
+              trackEvent.copy(event =
+                trackEvent.event match {
+                  case NoteOn(c, k, 0) => NoteOff(c, k, 40)
+                  case ev => ev
+                }
+              )
+            )
+          )
+        )
+      )
+    }
+
+    def denormalizeOnOff: MidiFile[A] = {
+      this.copy(tracks =
+        this.tracks.map(track =>
+          track.copy(events =
+            track.events.map(trackEvent =>
+              trackEvent.copy(event =
+                trackEvent.event match {
+                  case NoteOff(c, k, 40) => NoteOn(c, k, 0)
+                  case ev => ev
+                }
+              )
+            )
+          )
+        )
+      )
+    }
+  }
 }

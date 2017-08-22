@@ -31,8 +31,8 @@ Some consequences of the structure returned being a mirror of the file, is that 
 events which you might not expect.  `NoteOn(channel, pitch, velocity = 0)` is exactly the same as 
 `NoteOff(channel, pitch, 40)` and many applications will export midi using `NoteOn` actions 
 with `velocity` set to `0` instead of `NoteOff` actions. This helps shorten the midi file because of 
-the whole "Running Status" thing. `midi.normalizeOnOff(midiFile)` will fix this and give you what 
-you probably expect. `midi.denormalizeOnOff` will do the opposite. 
+the whole "Running Status" thing. `midiFile.normalizeOnOff` will fix this and give you what 
+you probably expect. `midiFile.denormalizeOnOff` will do the opposite. 
 
 ## Extensions
 
