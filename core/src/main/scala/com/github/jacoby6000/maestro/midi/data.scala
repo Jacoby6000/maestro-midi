@@ -6,10 +6,10 @@ object data {
   }
 
   trait MidiExtensionContainer {
-    type A
-    type B
-    type C
-    type D
+    type ExtendedMetaEventType
+    type SequencerSpecificMetaEventType
+    type F0SysexEventType
+    type F7SysexEventType
   }
 
   sealed trait ChunkType
@@ -43,8 +43,8 @@ object data {
       omniModeOn: Int => B,
       monoModeOn: (Int, Int) => B,
       polyModeOn: Int => B,
-      f0Sysex: A#C => B,
-      f7Sysex: A#D => B,
+      f0Sysex: A#F0SysexEventType => B,
+      f7Sysex: A#F7SysexEventType => B,
       sequenceNumber: Int => B,
       textEvent: String => B,
       copyrightNotice: String => B,
@@ -59,8 +59,8 @@ object data {
       smtpeOffset: (Int, Int, Int, Int, Int) => B,
       timeSignature: (Int, Int, Int, Int) => B,
       keySignature: (Int, Boolean) => B,
-      sequencerSpecificMetaEvent: (Int, A#B) => B,
-      extendedMetaEvent: (Int, A#A) => B
+      sequencerSpecificMetaEvent: (Int, A#SequencerSpecificMetaEventType) => B,
+      extendedMetaEvent: (Int, A#ExtendedMetaEventType) => B
     ): B =
       event match {
         case NoteOff(a, b, c) => noteOff(a, b, c)
@@ -124,8 +124,8 @@ object data {
   case class MonoModeOn(channel: Int, channels: Int) extends MidiChannelModeEvent
   case class PolyModeOn(channel: Int) extends MidiChannelModeEvent
 
-  case class F0Sysex[+A <: MidiExtensionContainer](data: A#C) extends SysexEvent[A]
-  case class F7Sysex[+A <: MidiExtensionContainer](data: A#D) extends SysexEvent[A]
+  case class F0Sysex[+A <: MidiExtensionContainer](data: A#F0SysexEventType) extends SysexEvent[A]
+  case class F7Sysex[+A <: MidiExtensionContainer](data: A#F7SysexEventType) extends SysexEvent[A]
 
   case class SequenceNumber(sequenceNumber: Int) extends MetaEvent[Nothing]
   case class TextEvent(text: String) extends MetaEvent[Nothing]
@@ -141,8 +141,8 @@ object data {
   case class SMTPEOffset(hours: Int, minutes: Int, seconds: Int, frames: Int, hundredthFrames: Int) extends MetaEvent[Nothing]
   case class TimeSignature(numerator: Int, denominator: Int, clocksPerMetronome: Int, thirtySecondNotesPerTwentyFourMidiClocks: Int) extends MetaEvent[Nothing]
   case class KeySignature(numAccidentals: Int, minor: Boolean) extends MetaEvent[Nothing]
-  case class SequencerSpecificMetaEvent[+A <: MidiExtensionContainer](id: Int, data: A#B) extends MetaEvent[A]
-  case class ExtendedMetaEvent[+A <: MidiExtensionContainer](evType: Int, data: A#A) extends MetaEvent[A]
+  case class SequencerSpecificMetaEvent[+A <: MidiExtensionContainer](id: Int, data: A#SequencerSpecificMetaEventType) extends MetaEvent[A]
+  case class ExtendedMetaEvent[+A <: MidiExtensionContainer](evType: Int, data: A#ExtendedMetaEventType) extends MetaEvent[A]
 
   case class Header(chunkType: ChunkType, format: Format, tracks: Int, division: Division)
   case class Track[+A <: MidiExtensionContainer](chunkType: ChunkType, events: Vector[TrackEvent[A]])

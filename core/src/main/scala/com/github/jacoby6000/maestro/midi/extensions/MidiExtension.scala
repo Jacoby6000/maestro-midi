@@ -33,7 +33,7 @@ trait MidiExtension[A <: MidiExtensionContainer] {
 }
 
 object MidiExtension {
-  def apply[A <: MidiExtensionContainer](
+  def instance[A <: MidiExtensionContainer](
     fa: (Int, BitVector) => Event[A],
     fb: (Int, BitVector) => Event[A],
     fc: (BitVector) => Event[A],
@@ -54,13 +54,12 @@ object MidiExtension {
 
 object MidiExtensionInstances extends MidiExtensionInstances
 trait MidiExtensionInstances {
-
   object NoExtensionContainer extends NoExtensionContainer
   trait NoExtensionContainer extends MidiExtensionContainer {
-    final type A = BitVector
-    final type B = BitVector
-    final type C = BitVector
-    final type D = BitVector
+    final type ExtendedMetaEventType = BitVector
+    final type SequencerSpecificMetaEventType = BitVector
+    final type F0SysexEventType = BitVector
+    final type F7SysexEventType = BitVector
   }
 }
 
