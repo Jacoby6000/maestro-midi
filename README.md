@@ -7,7 +7,7 @@ file in any way. It'll give you a format mirroring 1:1 with the file that was pr
 
 Add as a dependency with 
 ```scala
-libraryDependencies += "com.github.jacoby6000" %% "maestro-midi" % "0.1.0"
+libraryDependencies += "com.github.jacoby6000" %% "maestro-midi" % "0.1.1"
 ```
 
 Then use:
@@ -48,3 +48,10 @@ If you hold on to instances of `midi.decode.fileCodec`, be wary that the individ
 _not_ thread safe. This is because I'm bad and the way way I'm dealing with "Running Status" in the 
 `eventCodec` uses state.  If you parallelize on calls to `midi.decodeMidi` you will be fine, 
 however. Each call to `decodeMidi` gets its own instance of `midi.decode.fileCodec`.
+
+### Extras
+
+Monocle Lense Library
+```
+libraryDependencies += "com.github.jacoby6000" %% "maestro-midi-lenses" % "0.1.1"
+```
