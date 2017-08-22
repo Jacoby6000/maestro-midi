@@ -7,43 +7,43 @@ import shapeless.{:+:, CNil, Coproduct, Inl, Inr, Typeable}
 import data._
 
 object decode {
-  private implicit val eventTypeable: Typeable[Event[BitVector, BitVector, BitVector, BitVector]] =
-    new Typeable[Event[BitVector, BitVector, BitVector, BitVector]] {
-      def cast(t: Any): Option[Event[BitVector, BitVector, BitVector, BitVector]] =
+  private implicit val eventTypeable: Typeable[Event[NoExtensionContainer]] =
+    new Typeable[Event[NoExtensionContainer]] {
+      def cast(t: Any): Option[Event[NoExtensionContainer]] =
         if(t == null)
           None
-        else if(t.isInstanceOf[Event[_, _, _, _]])
-          Some(t.asInstanceOf[Event[BitVector, BitVector, BitVector, BitVector]])
+        else if(t.isInstanceOf[Event[_]])
+          Some(t.asInstanceOf[Event[NoExtensionContainer]])
         else
           None
 
-      def describe: String = "Event[BitVector, BitVector, BitVector, BitVector]"
+      def describe: String = "Event[NoExtensionContainer]"
     }
 
-  private implicit val sysexTypeable: Typeable[SysexEvent[BitVector, BitVector]] =
-    new Typeable[SysexEvent[BitVector, BitVector]] {
-      def cast(t: Any): Option[SysexEvent[BitVector, BitVector]] =
+  private implicit val sysexTypeable: Typeable[SysexEvent[NoExtensionContainer]] =
+    new Typeable[SysexEvent[NoExtensionContainer]] {
+      def cast(t: Any): Option[SysexEvent[NoExtensionContainer]] =
         if(t == null)
           None
-        else if(t.isInstanceOf[SysexEvent[_, _]])
-          Some(t.asInstanceOf[SysexEvent[BitVector, BitVector]])
+        else if(t.isInstanceOf[SysexEvent[_]])
+          Some(t.asInstanceOf[SysexEvent[NoExtensionContainer]])
         else
           None
 
-      def describe: String = "SysexEvent[BitVector, BitVector]"
+      def describe: String = "SysexEvent[NoExtensionContainer]"
     }
 
-  private implicit val metaTypeable: Typeable[MetaEvent[BitVector, BitVector]] =
-    new Typeable[MetaEvent[BitVector, BitVector]] {
-      def cast(t: Any): Option[MetaEvent[BitVector, BitVector]] =
+  private implicit val metaTypeable: Typeable[MetaEvent[NoExtensionContainer]] =
+    new Typeable[MetaEvent[NoExtensionContainer]] {
+      def cast(t: Any): Option[MetaEvent[NoExtensionContainer]] =
         if(t == null)
           None
-        else if(t.isInstanceOf[MetaEvent[_, _]])
-          Some(t.asInstanceOf[MetaEvent[BitVector, BitVector]])
+        else if(t.isInstanceOf[MetaEvent[_]])
+          Some(t.asInstanceOf[MetaEvent[NoExtensionContainer]])
         else
           None
 
-      def describe: String = "MetaEvent[BitVector, BitVector]"
+      def describe: String = "MetaEvent[NoExtensionContainer]"
     }
 
   val twoUint8 = uint8 ~ uint8
@@ -187,11 +187,11 @@ object decode {
       .withContext("midi")
   }
 
-  val sysexEventCodec: Codec[SysexEvent[BitVector, BitVector]] = {
-    (uint8 ~ variableSizeBytes(vint, bits)).exmap[SysexEvent[BitVector, BitVector]](
+  val sysexEventCodec: Codec[SysexEvent[NoExtensionContainer]] = {
+    (uint8 ~ variableSizeBytes(vint, bits)).exmap[SysexEvent[NoExtensionContainer]](
     {
-      case (0xF0, bits) => Attempt.successful(F0Sysex(bits))
-      case (0xF7, bits) => Attempt.successful(F7Sysex(bits))
+      case (0xF0, bits) => Attempt.successful(F0Sysex[NoExtensionContainer](bits))
+      case (0xF7, bits) => Attempt.successful(F7Sysex[NoExtensionContainer](bits))
       case (addr, _) =>
         Attempt.failure(Err(
           s"Invalid Sysex event. Got ${addr.toHexString.toUpperCase}, expected 0xF0 or 0xF7."
@@ -204,7 +204,7 @@ object decode {
     ).withContext("sysex")
   }
 
-  val metaEventCodec: Codec[MetaEvent[BitVector, BitVector]] = {
+  val metaEventCodec: Codec[MetaEvent[NoExtensionContainer]] = {
     val uint8or24: Codec[Int] = new Codec[Int] {
       def sizeBound = SizeBound(uint8.sizeBound.lowerBound, uint24.sizeBound.upperBound)
       def encode(i: Int) =
@@ -257,19 +257,19 @@ object decode {
       })(k => Attempt.successful((k.numAccidentals, if(k.minor) 1 else 0)))
     val sequencerSpecificMetaEventCodec =
       variable(uint8or24 ~ bits).xmapc({
-        case (n, leftover) => SequencerSpecificMetaEvent(n, leftover)
+        case (n, leftover) => SequencerSpecificMetaEvent[NoExtensionContainer](n, leftover)
       })(x => (x.id, x.data))
 
     // fallback
     val extendedMetaEvent =
       (constant(hex"0xFF") ~ uint8 ~ variable(bits)).xmapc({
-        case (((), adr), bs) => ExtendedMetaEvent(adr, bs)
+        case (((), adr), bs) => ExtendedMetaEvent[NoExtensionContainer](adr, bs)
       })(ev => (((), ev.evType), ev.data))
 
 
 
     discriminatorFallback(extendedMetaEvent,
-      discriminated[MetaEvent[BitVector, BitVector]]
+      discriminated[MetaEvent[NoExtensionContainer]]
         .by(constant(hex"0xFF") ~ uint8)
         .typecase(((), 0x00), sequenceNumberCodec.withContext("sequence-number"))
         .typecase(((), 0x01), textEventCodec.withContext("text-event"))
@@ -287,7 +287,7 @@ object decode {
         .typecase(((), 0x59), keySignatureCodec.withContext("key-signature"))
         .typecase(((), 0x7F), sequencerSpecificMetaEventCodec.withContext("sequencer-specific-meta-event"))
     ).xmapc(_.merge)({
-      case uk: ExtendedMetaEvent[BitVector] => Left(uk)
+      case uk: ExtendedMetaEvent[NoExtensionContainer] => Left(uk)
       case e => Right(e)
     }).withContext("meta")
   }
@@ -303,10 +303,10 @@ object decode {
       ).as[Header]
 
   def eventCodec =
-    new Codec[Event[BitVector, BitVector, BitVector, BitVector]] {
+    new Codec[Event[NoExtensionContainer]] {
 
-      val sysex = sysexEventCodec.upcast[Event[BitVector, BitVector, BitVector, BitVector]]
-      val meta = metaEventCodec.upcast[Event[BitVector, BitVector, BitVector, BitVector]]
+      val sysex = sysexEventCodec.upcast[Event[NoExtensionContainer]]
+      val meta = metaEventCodec.upcast[Event[NoExtensionContainer]]
       val midi = new Codec[MidiEvent] {
 
 
@@ -339,16 +339,16 @@ object decode {
           midiEventCodec.encode(provide(value))
 
         override def sizeBound: SizeBound = SizeBound(2, None)
-      }.upcast[Event[BitVector, BitVector, BitVector, BitVector]]
+      }.upcast[Event[NoExtensionContainer]]
 
       def sizeBound: SizeBound = SizeBound(12, None)
 
-      def encode(value: Event[BitVector, BitVector, BitVector, BitVector]): Attempt[BitVector] =
+      def encode(value: Event[NoExtensionContainer]): Attempt[BitVector] =
         sysex.encode(value) orElse
           meta.encode(value) orElse
           midi.encode(value)
 
-      def decode(bits: BitVector): Attempt[DecodeResult[Event[BitVector, BitVector, BitVector, BitVector]]] = {
+      def decode(bits: BitVector): Attempt[DecodeResult[Event[NoExtensionContainer]]] = {
         sysex.decode(bits) orElse
           meta.decode(bits) orElse
           midi.decode(bits)
@@ -356,15 +356,15 @@ object decode {
     }
 
   def trackEventCodec =
-    (vint.withContext("deltatime") :: eventCodec.withContext("event")).as[TrackEvent[BitVector, BitVector, BitVector, BitVector]]
+    (vint.withContext("deltatime") :: eventCodec.withContext("event")).as[TrackEvent[NoExtensionContainer]]
 
-  def trackCodec: Codec[Track[BitVector, BitVector, BitVector, BitVector]] =
+  def trackCodec: Codec[Track[NoExtensionContainer]] =
     (chunkTypeCodec.withContext("chunktype") ::
       variableSizeBytesLong(
         uint32,
         vector(trackEventCodec)
       )
-    ).withContext("track").as[Track[BitVector, BitVector, BitVector, BitVector]]
+    ).withContext("track").as[Track[NoExtensionContainer]]
 
   def fileCodec =
     (headerCodec :: vector(trackCodec)).as[StandardMidi].withContext("file")

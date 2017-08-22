@@ -5,19 +5,19 @@ import com.github.jacoby6000.maestro.midi.data._
 import com.github.jacoby6000.maestro.midi.extensions.MidiExtension.StandardMidiExtensions
 import scodec.bits.BitVector
 
-trait MidiExtension[A, B, C, D] {
-  def metaEvent(eventType: Int, data: BitVector): Event[A, B, C, D]
-  def sequencerEvent(sequencerId: Int, data: BitVector): Event[A, B, C, D]
-  def f0Event(data: BitVector): Event[A, B, C, D]
-  def f7Event(data: BitVector): Event[A, B, C, D]
+trait MidiExtension[A <: MidiExtensionContainer] {
+  def metaEvent(eventType: Int, data: BitVector): Event[A]
+  def sequencerEvent(sequencerId: Int, data: BitVector): Event[A]
+  def f0Event(data: BitVector): Event[A]
+  def f7Event(data: BitVector): Event[A]
 
   // TODO: Instead of rebuilding every event, write a fold that only messes with the 4 relevant structures.
-  def extend(midi: StandardMidi): MidiFile[A, B, C, D] =
+  def extend(midi: StandardMidi): MidiFile[A] =
     midi.copy(tracks =
       midi.tracks.map(track =>
         track.copy(events =
           track.events.map(trackEvent =>
-            trackEvent.copy(event = Event.fold[BitVector, BitVector, BitVector, BitVector, Event[A, B, C, D]](trackEvent.event)(
+            trackEvent.copy(event = Event.fold(trackEvent.event)(
                 NoteOff, NoteOn, KeyPressure, ControllerChange, ProgramChange, ChannelKeyPressure,
                 PitchBend, AllSoundOff, ResetAllControllers, LocalControl, AllNotesOff, OmniModeOff,
                 OmniModeOn, MonoModeOn, PolyModeOn, f0Event, f7Event, SequenceNumber, TextEvent,
@@ -33,22 +33,34 @@ trait MidiExtension[A, B, C, D] {
 }
 
 object MidiExtension {
-  def apply[A, B, C, D](
-    fa: (Int, BitVector) => Event[A, B, C ,D],
-    fb: (Int, BitVector) => Event[A, B, C ,D],
-    fc: (BitVector) => Event[A, B, C, D],
-    fd: (BitVector) => Event[A, B, C, D]
-  ): MidiExtension[A, B, C, D] =
-    new MidiExtension[A, B, C, D] {
-      def metaEvent(eventType: Int, data: BitVector): Event[A, B, C, D] = fa(eventType, data)
-      def sequencerEvent(sequencerId: Int, data: BitVector): Event[A, B, C, D] = fb(sequencerId, data)
-      def f0Event(data: BitVector): Event[A, B, C, D] = fc(data)
-      def f7Event(data: BitVector): Event[A, B, C, D] = fd(data)
+  def apply[A <: MidiExtensionContainer](
+    fa: (Int, BitVector) => Event[A],
+    fb: (Int, BitVector) => Event[A],
+    fc: (BitVector) => Event[A],
+    fd: (BitVector) => Event[A]
+  ): MidiExtension[A] =
+    new MidiExtension[A] {
+      def metaEvent(eventType: Int, data: BitVector): Event[A] = fa(eventType, data)
+      def sequencerEvent(sequencerId: Int, data: BitVector): Event[A] = fb(sequencerId, data)
+      def f0Event(data: BitVector): Event[A] = fc(data)
+      def f7Event(data: BitVector): Event[A] = fd(data)
     }
 
 
   class StandardMidiExtensions(val ev: StandardMidi) extends AnyVal {
-    def extended[A, B, C, D](ext: MidiExtension[A, B, C, D]) = ext.extend(ev)
+    def extended[A <: MidiExtensionContainer](ext: MidiExtension[A]) = ext.extend(ev)
+  }
+}
+
+object MidiExtensionInstances extends MidiExtensionInstances
+trait MidiExtensionInstances {
+
+  object NoExtensionContainer extends NoExtensionContainer
+  trait NoExtensionContainer extends MidiExtensionContainer {
+    final type A = BitVector
+    final type B = BitVector
+    final type C = BitVector
+    final type D = BitVector
   }
 }
 

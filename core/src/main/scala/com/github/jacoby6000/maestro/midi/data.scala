@@ -5,6 +5,13 @@ object data {
     val bytes = 4L
   }
 
+  trait MidiExtensionContainer {
+    type A
+    type B
+    type C
+    type D
+  }
+
   sealed trait ChunkType
   case object MThd extends ChunkType
   case object MTrk extends ChunkType
@@ -20,41 +27,41 @@ object data {
   case class Frames(framesPerSecond: Int, ticksPerFrame: Int) extends Division
 
   object Event {
-    def fold[A, B, C, D, E](event: Event[A, B, C, D])(
-      noteOff: (Int, Int, Int) => E,
-      noteOn: (Int, Int, Int) => E,
-      keyPressure: (Int, Int, Int) => E,
-      controllerChange: (Int, Int, Int) => E,
-      programChange: (Int, Int) => E,
-      channelKeyPressure: (Int, Int) => E,
-      pitchBend: (Int, Int, Int) => E,
-      allSoundOff: Int => E,
-      resetAllControllers: Int => E,
-      localControl: (Int, Boolean) => E,
-      allNotesOff: Int => E,
-      omniModeOff: Int => E,
-      omniModeOn: Int => E,
-      monoModeOn: (Int, Int) => E,
-      polyModeOn: Int => E,
-      f0Sysex: C => E,
-      f7Sysex: D => E,
-      sequenceNumber: Int => E,
-      textEvent: String => E,
-      copyrightNotice: String => E,
-      sequenceName: String => E,
-      instrumentName: String => E,
-      lyric: String => E,
-      marker: String => E,
-      cuePoint: String => E,
-      midiChannelPrefix: Int => E,
-      endOfTrack: => E,
-      setTempo: Int => E,
-      smtpeOffset: (Int, Int, Int, Int, Int) => E,
-      timeSignature: (Int, Int, Int, Int) => E,
-      keySignature: (Int, Boolean) => E,
-      sequencerSpecificMetaEvent: (Int, B) => E,
-      extendedMetaEvent: (Int, A) => E
-    ): E =
+    def fold[A <: MidiExtensionContainer, B](event: Event[A])(
+      noteOff: (Int, Int, Int) => B,
+      noteOn: (Int, Int, Int) => B,
+      keyPressure: (Int, Int, Int) => B,
+      controllerChange: (Int, Int, Int) => B,
+      programChange: (Int, Int) => B,
+      channelKeyPressure: (Int, Int) => B,
+      pitchBend: (Int, Int, Int) => B,
+      allSoundOff: Int => B,
+      resetAllControllers: Int => B,
+      localControl: (Int, Boolean) => B,
+      allNotesOff: Int => B,
+      omniModeOff: Int => B,
+      omniModeOn: Int => B,
+      monoModeOn: (Int, Int) => B,
+      polyModeOn: Int => B,
+      f0Sysex: A#C => B,
+      f7Sysex: A#D => B,
+      sequenceNumber: Int => B,
+      textEvent: String => B,
+      copyrightNotice: String => B,
+      sequenceName: String => B,
+      instrumentName: String => B,
+      lyric: String => B,
+      marker: String => B,
+      cuePoint: String => B,
+      midiChannelPrefix: Int => B,
+      endOfTrack: => B,
+      setTempo: Int => B,
+      smtpeOffset: (Int, Int, Int, Int, Int) => B,
+      timeSignature: (Int, Int, Int, Int) => B,
+      keySignature: (Int, Boolean) => B,
+      sequencerSpecificMetaEvent: (Int, A#B) => B,
+      extendedMetaEvent: (Int, A#A) => B
+    ): B =
       event match {
         case NoteOff(a, b, c) => noteOff(a, b, c)
         case NoteOn(a, b, c) => noteOn(a, b, c)
@@ -92,13 +99,13 @@ object data {
       }
   }
 
-  sealed trait Event[+A, +B, +C, +D]
-  sealed trait MidiEvent extends Event[Nothing, Nothing, Nothing, Nothing]
+  sealed trait Event[+A <: MidiExtensionContainer]
+  sealed trait MidiEvent extends Event[Nothing]
   sealed trait MidiVoiceEvent extends MidiEvent
   sealed trait MidiChannelModeEvent extends MidiEvent
 
-  sealed trait SysexEvent[+C, +D] extends Event[Nothing, Nothing, C, D]
-  sealed trait MetaEvent[+A, +B] extends Event[A, B, Nothing, Nothing]
+  sealed trait SysexEvent[+A <: MidiExtensionContainer] extends Event[A]
+  sealed trait MetaEvent[+A <: MidiExtensionContainer] extends Event[A]
 
   case class NoteOff(channel: Int, key: Int, velocity: Int) extends MidiVoiceEvent
   case class NoteOn(channel: Int, key: Int, velocity: Int) extends MidiVoiceEvent
@@ -117,29 +124,29 @@ object data {
   case class MonoModeOn(channel: Int, channels: Int) extends MidiChannelModeEvent
   case class PolyModeOn(channel: Int) extends MidiChannelModeEvent
 
-  case class F0Sysex[C](data: C) extends SysexEvent[C, Nothing]
-  case class F7Sysex[D](data: D) extends SysexEvent[Nothing, D]
+  case class F0Sysex[+A <: MidiExtensionContainer](data: A#C) extends SysexEvent[A]
+  case class F7Sysex[+A <: MidiExtensionContainer](data: A#D) extends SysexEvent[A]
 
-  case class SequenceNumber(sequenceNumber: Int) extends MetaEvent[Nothing, Nothing]
-  case class TextEvent(text: String) extends MetaEvent[Nothing, Nothing]
-  case class CopyrightNotice(text: String) extends MetaEvent[Nothing, Nothing]
-  case class SequenceName(text: String) extends MetaEvent[Nothing, Nothing]
-  case class InstrumentName(text: String) extends MetaEvent[Nothing, Nothing]
-  case class Lyric(text: String) extends MetaEvent[Nothing, Nothing]
-  case class Marker(text: String) extends MetaEvent[Nothing, Nothing]
-  case class CuePoint(text: String) extends MetaEvent[Nothing, Nothing]
-  case class MIDIChannelPrefix(channel: Int) extends MetaEvent[Nothing, Nothing]
-  case object EndOfTrack extends MetaEvent[Nothing, Nothing]
-  case class SetTempo(tempo: Int) extends MetaEvent[Nothing, Nothing]
-  case class SMTPEOffset(hours: Int, minutes: Int, seconds: Int, frames: Int, hundredthFrames: Int) extends MetaEvent[Nothing, Nothing]
-  case class TimeSignature(numerator: Int, denominator: Int, clocksPerMetronome: Int, thirtySecondNotesPerTwentyFourMidiClocks: Int) extends MetaEvent[Nothing, Nothing]
-  case class KeySignature(numAccidentals: Int, minor: Boolean) extends MetaEvent[Nothing, Nothing]
-  case class SequencerSpecificMetaEvent[B](id: Int, data: B) extends MetaEvent[Nothing, B]
-  case class ExtendedMetaEvent[A](evType: Int, data: A) extends MetaEvent[A, Nothing]
+  case class SequenceNumber(sequenceNumber: Int) extends MetaEvent[Nothing]
+  case class TextEvent(text: String) extends MetaEvent[Nothing]
+  case class CopyrightNotice(text: String) extends MetaEvent[Nothing]
+  case class SequenceName(text: String) extends MetaEvent[Nothing]
+  case class InstrumentName(text: String) extends MetaEvent[Nothing]
+  case class Lyric(text: String) extends MetaEvent[Nothing]
+  case class Marker(text: String) extends MetaEvent[Nothing]
+  case class CuePoint(text: String) extends MetaEvent[Nothing]
+  case class MIDIChannelPrefix(channel: Int) extends MetaEvent[Nothing]
+  case object EndOfTrack extends MetaEvent[Nothing]
+  case class SetTempo(tempo: Int) extends MetaEvent[Nothing]
+  case class SMTPEOffset(hours: Int, minutes: Int, seconds: Int, frames: Int, hundredthFrames: Int) extends MetaEvent[Nothing]
+  case class TimeSignature(numerator: Int, denominator: Int, clocksPerMetronome: Int, thirtySecondNotesPerTwentyFourMidiClocks: Int) extends MetaEvent[Nothing]
+  case class KeySignature(numAccidentals: Int, minor: Boolean) extends MetaEvent[Nothing]
+  case class SequencerSpecificMetaEvent[+A <: MidiExtensionContainer](id: Int, data: A#B) extends MetaEvent[A]
+  case class ExtendedMetaEvent[+A <: MidiExtensionContainer](evType: Int, data: A#A) extends MetaEvent[A]
 
   case class Header(chunkType: ChunkType, format: Format, tracks: Int, division: Division)
-  case class Track[+A, +B, +C, +D](chunkType: ChunkType, events: Vector[TrackEvent[A, B, C, D]])
-  case class TrackEvent[+A, +B, +C, +D](deltaTime: Int, event: Event[A, B, C, D])
+  case class Track[+A <: MidiExtensionContainer](chunkType: ChunkType, events: Vector[TrackEvent[A]])
+  case class TrackEvent[+A <: MidiExtensionContainer](deltaTime: Int, event: Event[A])
 
-  case class MidiFile[+A, +B, +C, +D](header: Header, tracks: Vector[Track[A, B, C, D]])
+  case class MidiFile[+A <: MidiExtensionContainer](header: Header, tracks: Vector[Track[A]])
 }
